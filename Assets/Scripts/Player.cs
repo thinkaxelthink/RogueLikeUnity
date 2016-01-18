@@ -83,14 +83,14 @@ public class Player : MovingObject {
 			enabled = false;
 		} else if (other.tag == "Food") {
 			food += pointsPerFood;
-			foodText.text = "Food: " + food;
+			foodText.text = "+" + pointsPerFood + " Food: " + food;
 			// seems to turn off the game object 
 			// that was dynamically added to the game board
 			// question: does it remove it from memory?
 			other.gameObject.SetActive (false);
 		} else if (other.tag == "Soda") {
 			food += pointsPerSoda;
-			foodText.text = "Food: " + food;
+			foodText.text = "+" + pointsPerSoda + " Food: " + food;
 
 			other.gameObject.SetActive (false);
 		}
@@ -117,7 +117,10 @@ public class Player : MovingObject {
 	public void LoseFood (int loss)
 	{
 		animator.SetTrigger ("playerHit");
+
 		food -= loss;
+		foodText.text = "-" + loss + " Food: " + food;
+
 		checkIfGameOver ();
 	}
 
