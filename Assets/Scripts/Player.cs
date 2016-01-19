@@ -9,6 +9,13 @@ public class Player : MovingObject {
 	public int pointsPerSoda = 20;
 	public float restartLevelDelay = 1f;
 	public Text foodText;
+	public AudioClip moveSound1;
+	public AudioClip moveSound2;
+	public AudioClip eatSound1;
+	public AudioClip eatSound2;
+	public AudioClip drinkSound1;
+	public AudioClip drinkSound2;
+	public AudioClip gameOverSound;
 
 	// stores our animator ( component added to the player prefab)
 	private Animator animator;
@@ -67,6 +74,14 @@ public class Player : MovingObject {
 		base.AttemptMove <T> (xDir, yDir);
 
 		RaycastHit2D hit;
+		// Test if player moved
+		if (Move (xDir, yDir, out hit))
+		{
+			// Play a Moving sound
+			// tell our singleton to pick one out any number of args given
+			// the more sounds given as args the more variety of sound choice
+			SoundManager.instance.RandomizeSfx (moveSound1, moveSound2);
+		}
 
 		checkIfGameOver ();
 
@@ -84,6 +99,7 @@ public class Player : MovingObject {
 		} else if (other.tag == "Food") {
 			food += pointsPerFood;
 			foodText.text = "+" + pointsPerFood + " Food: " + food;
+			SoundManager.instance.RandomizeSfx (eatSound1, eatSound2);
 			// seems to turn off the game object 
 			// that was dynamically added to the game board
 			// question: does it remove it from memory?
@@ -91,6 +107,7 @@ public class Player : MovingObject {
 		} else if (other.tag == "Soda") {
 			food += pointsPerSoda;
 			foodText.text = "+" + pointsPerSoda + " Food: " + food;
+			SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
 
 			other.gameObject.SetActive (false);
 		}
@@ -128,6 +145,8 @@ public class Player : MovingObject {
 	{
 		if (food <= 0)
 		{
+			SoundManager.instance.PlaySingle (gameOverSound);
+			SoundManager.instance.musicSource.Stop ();
 			GameManager.instance.GameOver ();
 		}
 	}
